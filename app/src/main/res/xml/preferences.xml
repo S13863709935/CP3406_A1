@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <PreferenceCategory android:title="Personal Info">
+        <Preference
+            android:icon="@drawable/ic_avatar_24dp"
+            android:key="avatar"
+            android:summary="Change Avatar"
+            android:title="Avatar" />
+
+        <Preference
+            android:icon="@drawable/ic_password_24dp"
+            android:key="change_password"
+            android:summary="Click to change password"
+            android:title="Change Password" />
+
+        <Preference
+            android:icon="@drawable/ic_logout_24dp"
+            android:key="logout"
+            android:title="Log Out" />
+    </PreferenceCategory>
+
+    <PreferenceCategory android:title="App Settings">
+        <Preference
+            android:icon="@drawable/ic_location_city_24dp"
+            android:key="default_city"
+            android:summary="Click to select default city"
+            android:title="Default City" />
+
+        <SwitchPreferenceCompat
+            android:defaultValue="true"
+            android:icon="@drawable/ic_my_location_24dp"
+            android:key="auto_location"
+            android:summary="Enable to use location services"
+            android:title="Auto-Locate" />
+
+        <SeekBarPreference
+            android:defaultValue="5"
+            android:icon="@drawable/ic_history_24dp"
+            android:key="max_history_size"
+            android:max="10"
+            android:title="History Count"
+            app:min="3"
+            app:showSeekBarValue="true" />
+    </PreferenceCategory>
+
+</PreferenceScreen> 
