@@ -62,7 +62,7 @@ public class HistoryFragment extends Fragment implements HistoryCityAdapter.OnCi
 
         // Show tip
         Toast.makeText(requireContext(), 
-            "已切换到城市: " + city.cityName, Toast.LENGTH_SHORT).show();
+            "Switched to: " + city.cityName, Toast.LENGTH_SHORT).show();
 
         // Switch to weather page
         requireActivity().getSupportFragmentManager()

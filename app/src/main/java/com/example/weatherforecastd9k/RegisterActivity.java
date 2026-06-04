@@ -59,16 +59,16 @@ public class RegisterActivity extends AppCompatActivity {
 
         viewModel.getVerificationCode().observe(this, code -> {
             if (code != null) {
-                Toast.makeText(this, "验证码: " + code, Toast.LENGTH_LONG).show();
+                Toast.makeText(this, "Verification code " + code, Toast.LENGTH_LONG).show();
                 new CountDownTimer(60000, 1000) {
                     public void onTick(long millisUntilFinished) {
                         sendCodeButton.setEnabled(false);
-                        sendCodeButton.setText(millisUntilFinished / 1000 + "秒后重试");
+                        sendCodeButton.setText(millisUntilFinished / 1000 + "s to retry");
                     }
 
                     public void onFinish() {
                         sendCodeButton.setEnabled(true);
-                        sendCodeButton.setText("发送验证码");
+                        sendCodeButton.setText("Send verification code");
                     }
                 }.start();
             }
@@ -91,7 +91,7 @@ public class RegisterActivity extends AppCompatActivity {
             if (result != null) {
                 result.observe(this, success -> {
                     if (success) {
-                        Toast.makeText(this, "注册成功", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(this, "Registration successful", Toast.LENGTH_SHORT).show();
                         Intent intent = new Intent(this, LoginActivity.class);
                         intent.putExtra("username", username);
                         intent.putExtra("password", password);
@@ -99,7 +99,7 @@ public class RegisterActivity extends AppCompatActivity {
                         startActivity(intent);
                         finish();
                     } else {
-                        Toast.makeText(this, "注册失败", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(this, "Registration failed", Toast.LENGTH_SHORT).show();
                     }
                 });
             }

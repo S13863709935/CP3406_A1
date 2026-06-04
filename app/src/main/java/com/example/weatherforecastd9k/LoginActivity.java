@@ -104,11 +104,11 @@ public class LoginActivity extends AppCompatActivity {
                     } else {
                         clearSavedCredentials();
                     }
-                    Toast.makeText(this, "登录成功", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this, "Login successful", Toast.LENGTH_SHORT).show();
                     startActivity(new Intent(this, MainActivity.class));
                     finish();
                 } else {
-                    Toast.makeText(this, "用户名或密码错误", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this, "Invalid username or password", Toast.LENGTH_SHORT).show();
                 }
             });
         }

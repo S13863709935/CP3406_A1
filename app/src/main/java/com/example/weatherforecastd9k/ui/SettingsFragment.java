@@ -112,7 +112,7 @@ public class SettingsFragment extends PreferenceFragmentCompat implements
             if (autoLocation) {
                 // Clear default city when auto-location is enabled
                 prefs.edit().putString("default_city", "").apply();
-                findPreference("default_city").setSummary("自动定位已开启");
+                findPreference("default_city").setSummary("Auto-location enabled");
             }
             return true;
         });
@@ -122,7 +122,7 @@ public class SettingsFragment extends PreferenceFragmentCompat implements
             new MaterialAlertDialogBuilder(requireContext())
                 .setTitle("Logout")
                 .setMessage("Are you sure you want to logout?")
-                .setPositiveButton("确定", (dialog, which) -> {
+                .setPositiveButton("Confirm", (dialog, which) -> {
                     // Clear session and remembered password
                     sessionManager.clearSession();
                     clearSavedCredentials();

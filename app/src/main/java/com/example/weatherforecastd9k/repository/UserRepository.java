@@ -35,7 +35,7 @@ public class UserRepository {
         MutableLiveData<Boolean> result = new MutableLiveData<>();
         executorService.execute(() -> {
             try {
-                // 检查用户名和手机号是否已存在
+                // Check if the username and phone number already exist
                 if (userDao.findByUsername(username) != null) {
                     result.postValue(false);
                     return;
@@ -45,7 +45,7 @@ public class UserRepository {
                     return;
                 }
 
-                // 创建新用户
+                // Create a new user account
                 User user = new User(username, password, phone);
                 userDao.insert(user);
                 result.postValue(true);
@@ -69,13 +69,13 @@ public class UserRepository {
         MutableLiveData<Boolean> result = new MutableLiveData<>();
         executorService.execute(() -> {
             try {
-                // 验证原密码
+                // Verify the current password
                 if (!userDao.verifyPassword(username, oldPassword)) {
                     result.postValue(false);
                     return;
                 }
 
-                // 更新密码
+                // Update the user's password in the database
                 userDao.updatePassword(username, newPassword);
                 result.postValue(true);
             } catch (Exception e) {

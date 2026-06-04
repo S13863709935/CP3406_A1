@@ -27,32 +27,32 @@ public class ChangePasswordDialog extends DialogFragment {
         TextInputEditText confirmPassword = view.findViewById(R.id.confirmPassword);
 
         builder.setView(view)
-                .setTitle("修改密码")
-                .setPositiveButton("确定", (dialog, id) -> {
+                .setTitle("Change Password")
+                .setPositiveButton("Confirm", (dialog, id) -> {
                     String oldPwd = oldPassword.getText().toString();
                     String newPwd = newPassword.getText().toString();
                     String confirmPwd = confirmPassword.getText().toString();
 
                     if (validatePasswords(oldPwd, newPwd, confirmPwd)) {
-                        // TODO: 实现密码修改逻辑
-                        Toast.makeText(requireContext(), "密码修改成功", Toast.LENGTH_SHORT).show();
+                        // TODO: Implement password change logic
+                        Toast.makeText(requireContext(), "Password changed successfully", Toast.LENGTH_SHORT).show();
                     }
                 })
-                .setNegativeButton("取消", (dialog, id) -> dialog.cancel());
+                .setNegativeButton("Cancel", (dialog, id) -> dialog.cancel());
 
         return builder.create();
     }
 
     private boolean validatePasswords(String oldPwd, String newPwd, String confirmPwd) {
         if (oldPwd.isEmpty() || newPwd.isEmpty() || confirmPwd.isEmpty()) {
-            Toast.makeText(requireContext(), "请填写所有密码字段", Toast.LENGTH_SHORT).show();
+            Toast.makeText(requireContext(), "Please fill in all password fields", Toast.LENGTH_SHORT).show();
             return false;
         }
         if (!newPwd.equals(confirmPwd)) {
-            Toast.makeText(requireContext(), "新密码与确认密码不一致", Toast.LENGTH_SHORT).show();
+            Toast.makeText(requireContext(), "New password and confirmation do not match", Toast.LENGTH_SHORT).show();
             return false;
         }
-        // TODO: 验证旧密码是否正确
+        // TODO: Verify if the old password is correct
         return true;
     }
 } 
