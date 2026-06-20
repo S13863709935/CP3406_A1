@@ -1,5 +1,7 @@
 plugins {
     alias(libs.plugins.android.application)
+    alias(libs.plugins.kotlin.android)
+    id 'org.jetbrains.kotlin.plugin.compose' version '2.0.0'
 }
 
 android {
@@ -16,13 +18,12 @@ android {
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables.useSupportLibrary = true
 
-        // Room schema 导出配置
         javaCompileOptions {
             annotationProcessorOptions {
                 arguments += [
-                    "room.schemaLocation": "$projectDir/schemas".toString(),
-                    "room.incremental": "true",
-                    "room.expandProjection": "true"
+                        "room.schemaLocation": "$projectDir/schemas".toString(),
+                        "room.incremental": "true",
+                        "room.expandProjection": "true"
                 ]
             }
         }
@@ -39,19 +40,30 @@ android {
         targetCompatibility JavaVersion.VERSION_1_8
     }
 
+    // 🌟 Jetpack Compose support
+    buildFeatures {
+        compose = true
+    }
+
+
+    kotlinOptions {
+        jvmTarget = '1.8'
+    }
+
     configurations.all {
         exclude group: 'com.android.support'
-        
+
         resolutionStrategy {
             force 'androidx.core:core:1.13.0'
+            force 'androidx.core:core-ktx:1.13.0'
             force 'androidx.appcompat:appcompat:1.7.0'
         }
     }
 }
 
 dependencies {
-
     implementation libs.appcompat
+    implementation libs.core.ktx
     implementation libs.material
     implementation libs.activity
     implementation libs.constraintlayout
@@ -65,34 +77,32 @@ dependencies {
 
     implementation "androidx.viewpager2:viewpager2:1.0.0"
 
-    // 高德地图依赖
     implementation 'com.amap.api:3dmap:9.2.0'
-    // 搜索功能
     implementation 'com.amap.api:search:9.2.0'
-    // 定位功能
     implementation 'com.amap.api:location:6.1.0'
 
-    // 城市选择器
     implementation('liji.library.dev:citypickerview:0.7.0') {
         exclude group: 'com.android.support'
     }
 
-    // Preference依赖
     implementation "androidx.preference:preference:1.2.1"
-
     implementation 'de.hdodenhof:circleimageview:3.1.0'
-
     implementation "androidx.swiperefreshlayout:swiperefreshlayout:1.1.0"
 
-    // 网络请求相关
     implementation 'com.squareup.retrofit2:retrofit:2.9.0'
     implementation 'com.squareup.retrofit2:converter-gson:2.9.0'
     implementation 'com.squareup.okhttp3:logging-interceptor:4.9.0'
 
     def lifecycle_version = "2.7.0"
-    
-    // ViewModel
     implementation "androidx.lifecycle:lifecycle-viewmodel:$lifecycle_version"
-    // LiveData
     implementation "androidx.lifecycle:lifecycle-livedata:$lifecycle_version"
+
+    // 🌟 Jetpack Compose dependencies
+    def composeBom = platform('androidx.compose:compose-bom:2024.02.00')
+    implementation composeBom
+    androidTestImplementation composeBom
+    implementation 'androidx.compose.ui:ui'
+    implementation 'androidx.compose.material3:material3'
+    implementation 'androidx.compose.ui:ui-tooling-preview'
+    debugImplementation 'androidx.compose.ui:ui-tooling'
 }

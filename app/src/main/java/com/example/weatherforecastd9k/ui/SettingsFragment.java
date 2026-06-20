@@ -65,7 +65,7 @@ import java.util.concurrent.Executors;
 
 public class SettingsFragment extends PreferenceFragmentCompat implements
         SharedPreferences.OnSharedPreferenceChangeListener {
-    
+
     private static final int PICK_IMAGE = 100;
     private static final int PERMISSION_REQUEST_CODE = 1;
     private SharedPreferences prefs;
@@ -81,7 +81,7 @@ public class SettingsFragment extends PreferenceFragmentCompat implements
         prefs = PreferenceManager.getDefaultSharedPreferences(requireContext());
         userRepository = new UserRepository(requireContext());
         sessionManager = new SessionManager(requireContext());
-        
+
         // Remove username setting
         Preference usernamePref = findPreference("username");
         if (usernamePref != null) {
@@ -120,20 +120,20 @@ public class SettingsFragment extends PreferenceFragmentCompat implements
         // Set logout click event
         findPreference("logout").setOnPreferenceClickListener(preference -> {
             new MaterialAlertDialogBuilder(requireContext())
-                .setTitle("Logout")
-                .setMessage("Are you sure you want to logout?")
-                .setPositiveButton("Confirm", (dialog, which) -> {
-                    // Clear session and remembered password
-                    sessionManager.clearSession();
-                    clearSavedCredentials();
-                    
-                    // Navigate to login page
-                    Intent intent = new Intent(requireContext(), LoginActivity.class);
-                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                    startActivity(intent);
-                })
-                .setNegativeButton("Cancel", null)
-                .show();
+                    .setTitle("Logout")
+                    .setMessage("Are you sure you want to logout?")
+                    .setPositiveButton("Confirm", (dialog, which) -> {
+                        // Clear session and remembered password
+                        sessionManager.clearSession();
+                        clearSavedCredentials();
+
+                        // Navigate to login page
+                        Intent intent = new Intent(requireContext(), LoginActivity.class);
+                        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                        startActivity(intent);
+                    })
+                    .setNegativeButton("Cancel", null)
+                    .show();
             return true;
         });
 
@@ -144,20 +144,20 @@ public class SettingsFragment extends PreferenceFragmentCompat implements
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = super.onCreateView(inflater, container, savedInstanceState);
-        
+
         // Get parent layout
         ViewGroup parent = (ViewGroup) view.getParent();
         if (parent != null) {
             parent.removeView(view);
         }
-        
+
         // Load custom layout
         View rootView = inflater.inflate(R.layout.fragment_settings, container, false);
-        
+
         // Find list_container and add preferences view
         ViewGroup listContainer = rootView.findViewById(android.R.id.list_container);
         listContainer.addView(view);
-        
+
         // Initialize avatar
         avatarImage = rootView.findViewById(R.id.avatarImage);
         String avatarUri = prefs.getString("avatar_uri", "");
@@ -179,27 +179,38 @@ public class SettingsFragment extends PreferenceFragmentCompat implements
                 e.printStackTrace();
             }
         }
-        
+
         avatarImage.setOnClickListener(v -> openGallery());
-        
+
         return rootView;
+    }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @androidx.annotation.Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+
+        androidx.compose.ui.platform.ComposeView composeView = view.findViewById(R.id.compose_view_bonus);
+
+        if (composeView != null) {
+            ComposeHelper.setupComposeView(composeView);
+        }
     }
 
     private void openGallery() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             // Android 13 and above
-            if (ContextCompat.checkSelfPermission(requireContext(), 
+            if (ContextCompat.checkSelfPermission(requireContext(),
                     Manifest.permission.READ_MEDIA_IMAGES) != PackageManager.PERMISSION_GRANTED) {
-                requestPermissions(new String[]{Manifest.permission.READ_MEDIA_IMAGES}, 
-                    PERMISSION_REQUEST_CODE);
+                requestPermissions(new String[]{Manifest.permission.READ_MEDIA_IMAGES},
+                        PERMISSION_REQUEST_CODE);
                 return;
             }
         } else {
             // Android 13 and below
-            if (ContextCompat.checkSelfPermission(requireContext(), 
+            if (ContextCompat.checkSelfPermission(requireContext(),
                     Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-                requestPermissions(new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, 
-                    PERMISSION_REQUEST_CODE);
+                requestPermissions(new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
+                        PERMISSION_REQUEST_CODE);
                 return;
             }
         }
@@ -211,7 +222,7 @@ public class SettingsFragment extends PreferenceFragmentCompat implements
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
-                                         @NonNull int[] grantResults) {
+                                           @NonNull int[] grantResults) {
         if (requestCode == PERMISSION_REQUEST_CODE) {
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 openGallery();
@@ -260,17 +271,17 @@ public class SettingsFragment extends PreferenceFragmentCompat implements
 
             String currentUsername = sessionManager.getUsername();
             userRepository.changePassword(currentUsername, oldPassword, newPassword)
-                .observe(this, success -> {
-                    if (success) {
-                        Toast.makeText(requireContext(), "Password changed successfully", Toast.LENGTH_SHORT).show();
-                        dialog.dismiss();
-                        sessionManager.clearSession();
-                        startActivity(new Intent(requireContext(), LoginActivity.class));
-                        requireActivity().finish();
-                    } else {
-                        Toast.makeText(requireContext(), "Incorrect original password", Toast.LENGTH_SHORT).show();
-                    }
-                });
+                    .observe(this, success -> {
+                        if (success) {
+                            Toast.makeText(requireContext(), "Password changed successfully", Toast.LENGTH_SHORT).show();
+                            dialog.dismiss();
+                            sessionManager.clearSession();
+                            startActivity(new Intent(requireContext(), LoginActivity.class));
+                            requireActivity().finish();
+                        } else {
+                            Toast.makeText(requireContext(), "Incorrect original password", Toast.LENGTH_SHORT).show();
+                        }
+                    });
         });
 
         dialog.show();
@@ -278,80 +289,80 @@ public class SettingsFragment extends PreferenceFragmentCompat implements
 
     private void showCityPicker() {
         CityPicker cityPicker = new CityPicker.Builder(requireActivity())
-            .textSize(14)
-            .title("Address selection")
-            .titleBackgroundColor("#FFFFFF")
-            .confirTextColor("#696969")
-            .cancelTextColor("#696969")
-            .province("Singapore")
-            .city("Singapore")
-            .district("Geylang")
-            .textColor(Color.parseColor("#000000"))
-            .provinceCyclic(true)
-            .cityCyclic(false)
-            .districtCyclic(false)
-            .visibleItemsCount(7)
-            .itemPadding(10)
-            .onlyShowProvinceAndCity(false)
-            .build();
-        
+                .textSize(14)
+                .title("Address selection")
+                .titleBackgroundColor("#FFFFFF")
+                .confirTextColor("#696969")
+                .cancelTextColor("#696969")
+                .province("Singapore")
+                .city("Singapore")
+                .district("Geylang")
+                .textColor(Color.parseColor("#000000"))
+                .provinceCyclic(true)
+                .cityCyclic(false)
+                .districtCyclic(false)
+                .visibleItemsCount(7)
+                .itemPadding(10)
+                .onlyShowProvinceAndCity(false)
+                .build();
+
         cityPicker.show();
-        
+
         cityPicker.setOnCityItemClickListener(new CityPicker.OnCityItemClickListener() {
             @Override
             public void onSelected(String... citySelected) {
                 String province = citySelected[0];
                 String city = citySelected[1];
                 String district = citySelected[2];
-                
+
                 // Save selected city with full details
                 String fullLocation = city + district;
 
                 // Get city code
                 RetrofitClient.create(DistrictApi.class)
-                    .getDistrict(RetrofitClient.getApiKey(), city, 1, "base")
-                    .enqueue(new Callback<DistrictResponse>() {
-                        @Override
-                        public void onResponse(Call<DistrictResponse> call, Response<DistrictResponse> response) {
-                            if (response.isSuccessful() && response.body() != null 
-                                && response.body().getDistricts() != null 
-                                && !response.body().getDistricts().isEmpty()) {
+                        .getDistrict(RetrofitClient.getApiKey(), city, 1, "base")
+                        .enqueue(new Callback<DistrictResponse>() {
+                            @Override
+                            public void onResponse(Call<DistrictResponse> call, Response<DistrictResponse> response) {
+                                if (response.isSuccessful() && response.body() != null
+                                        && response.body().getDistricts() != null
+                                        && !response.body().getDistricts().isEmpty()) {
 
-                                Log.d(TAG, "Response json: \n" + new GsonBuilder()
-                                        .setPrettyPrinting()
-                                        .create()
-                                        .toJson(response.body()));
+                                    Log.d(TAG, "Response json: \n" + new GsonBuilder()
+                                            .setPrettyPrinting()
+                                            .create()
+                                            .toJson(response.body()));
 
-                                String adcode = response.body().getDistricts().get(0).getAdcode();
-                                
-                                // Save city information code
-                                prefs.edit()
-                                    .putString("default_city", fullLocation)
-                                    .putString("city_code", adcode)
-                                    .putBoolean("auto_location", false)
-                                    .apply();
-                                
-                                // Update UI
-                                findPreference("default_city").setSummary(fullLocation);
-                                ((SwitchPreferenceCompat) findPreference("auto_location")).setChecked(false);
-                                Toast.makeText(requireContext(), 
-                                    "Default city set: " + fullLocation, Toast.LENGTH_SHORT).show();
+                                    String adcode = response.body().getDistricts().get(0).getAdcode();
 
-                                // Add history record here
-                                HistoryCityManager historyManager = new HistoryCityManager(requireContext());
-                                historyManager.addCity(fullLocation, adcode);
-                            } else {
-                                Toast.makeText(requireContext(), 
-                                    "Failed to get city code", Toast.LENGTH_SHORT).show();
+                                    // Save city information code
+                                    prefs.edit()
+                                            .putString("default_city", fullLocation)
+                                            .putString("city_code", adcode)
+                                            .putBoolean("auto_location", false)
+                                            .apply();
+
+                                    // Update UI
+                                    findPreference("default_city").setSummary(fullLocation);
+                                    ((SwitchPreferenceCompat) findPreference("auto_location")).setChecked(false);
+                                    Toast.makeText(requireContext(),
+                                            "Default city set: " + fullLocation, Toast.LENGTH_SHORT).show();
+
+                                    // Add history record here
+                                    HistoryCityManager historyManager = new HistoryCityManager(requireContext());
+                                    historyManager.addCity(fullLocation, adcode);
+                                } else {
+                                    Toast.makeText(requireContext(),
+                                            "Failed to get city code", Toast.LENGTH_SHORT).show();
+                                }
                             }
-                        }
 
-                        @Override
-                        public void onFailure(Call<DistrictResponse> call, Throwable t) {
-                            Toast.makeText(requireContext(), 
-                                "Network request failed: " + t.getMessage(), Toast.LENGTH_SHORT).show();
-                        }
-                    });
+                            @Override
+                            public void onFailure(Call<DistrictResponse> call, Throwable t) {
+                                Toast.makeText(requireContext(),
+                                        "Network request failed: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+                            }
+                        });
             }
         });
     }
@@ -369,7 +380,7 @@ public class SettingsFragment extends PreferenceFragmentCompat implements
                         avatarDir.mkdirs();
                     }
                     File avatarFile = new File(avatarDir, "avatar_" + System.currentTimeMillis() + ".jpg");
-                    
+
                     // Copy file
                     InputStream is = requireContext().getContentResolver().openInputStream(sourceUri);
                     OutputStream os = new FileOutputStream(avatarFile);
@@ -381,12 +392,12 @@ public class SettingsFragment extends PreferenceFragmentCompat implements
                     os.flush();
                     os.close();
                     is.close();
-                    
+
                     // Save new URI and update display
                     Uri newUri = Uri.fromFile(avatarFile);
                     prefs.edit().putString("avatar_uri", newUri.toString()).apply();
                     avatarImage.setImageURI(newUri);
-                    
+
                     Toast.makeText(requireContext(), "Avatar updated", Toast.LENGTH_SHORT).show();
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -435,10 +446,10 @@ public class SettingsFragment extends PreferenceFragmentCompat implements
 
         // Clear other related SharedPreferences data
         prefs.edit()
-            .remove("username")
-            .remove("password")
-            .remove("remember_password")
-            .apply();
+                .remove("username")
+                .remove("password")
+                .remove("remember_password")
+                .apply();
     }
 
     // Shutdown ExecutorService in onDestroy
@@ -449,4 +460,4 @@ public class SettingsFragment extends PreferenceFragmentCompat implements
             executorService.shutdown();
         }
     }
-} 
+}
